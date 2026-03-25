@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Until We Meet ❤️</title>
+
+<style>
+body {
+margin:0;
+font-family:Arial;
+background:black;
+color:white;
+overflow:hidden;
+}
+
+/* LOCKSCREEN */
+#lockscreen {
+position:fixed;
+width:100%;
+height:100%;
+background:linear-gradient(135deg,#000,#1a1a1a);
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:10;
+}
+
+.title {font-size:22px;margin-bottom:20px;}
+
+.dots {display:flex;gap:10px;margin-bottom:20px;}
+
+.dot {
+width:15px;height:15px;border-radius:50%;
+border:2px solid white;
+}
+.filled {background:white;}
+
+.keypad {
+display:grid;
+grid-template-columns:repeat(3,70px);
+gap:15px;
+}
+
+.key {
+width:70px;height:70px;border-radius:50%;
+background:#222;
+display:flex;justify-content:center;align-items:center;
+font-size:22px;
+}
+
+/* MAIN */
+#main {
+display:none;
+height:100vh;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+text-align:center;
+position:relative;
+}
+
+/* glow welcome */
+#welcome {
+position:absolute;
+top:40%;
+font-size:28px;
+opacity:0;
+animation:fadeIn 2s forwards;
+text-shadow:0 0 25px rgba(255,255,255,0.9);
+}
+
+@keyframes fadeIn {
+0% {opacity:0; transform:translateY(30px);}
+100% {opacity:1; transform:translateY(0);}
+}
+
+/* photo cinematic */
+img {
+width:250px;height:350px;
+object-fit:cover;
+border-radius:20px;
+box-shadow:0 0 40px rgba(255,255,255,0.6);
+margin-bottom:20px;
+display:none;
+animation:zoom 10s ease-in-out infinite alternate;
+}
+
+@keyframes zoom {
+0% {transform:scale(1);}
+100% {transform:scale(1.1);}
+}
+
+/* typing */
+#message {
+font-size:18px;
+opacity:0;
+margin-bottom:10px;
+}
+
+.typing {
+border-right:2px solid white;
+white-space:nowrap;
+overflow:hidden;
+animation:typing 3s steps(30,end) forwards;
+}
+
+@keyframes typing {
+from {width:0;}
+to {width:100%;}
+}
+
+#timer {font-size:26px;}
+
+/* hearts */
+.heart {
+position:absolute;
+bottom:-20px;
+width:12px;height:12px;
+background:red;
+transform:rotate(45deg);
+animation:float 6s linear infinite;
+}
+
+.heart:before,.heart:after {
+content:"";
+position:absolute;
+width:12px;height:12px;
+background:red;border-radius:50%;
+}
+
+.heart:before {top:-6px;}
+.heart:after {left:-6px;}
+
+@keyframes float {
+0% {transform:translateY(0) rotate(45deg);opacity:1;}
+100% {transform:translateY(-100vh) rotate(45deg);opacity:0;}
+}
+
+/* subtle particles */
+.particle {
+position:absolute;
+width:3px;height:3px;
+background:white;
+opacity:0.5;
+animation:float2 8s linear infinite;
+}
+
+@keyframes float2 {
+0% {transform:translateY(0);}
+100% {transform:translateY(-100vh);}
+}
+</style>
+</head>
+
+<body>
+
+<div id="lockscreen">
+<div class="title">❤️ Enter Passcode ❤️</div>
+
+<div class="dots">
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+</div>
+
+<div class="keypad">
+<div class="key" onclick="press(1)">1</div>
+<div class="key" onclick="press(2)">2</div>
+<div class="key" onclick="press(3)">3</div>
+<div class="key" onclick="press(4)">4</div>
+<div class="key" onclick="press(5)">5</div>
+<div class="key" onclick="press(6)">6</div>
+<div class="key" onclick="press(7)">7</div>
+<div class="key" onclick="press(8)">8</div>
+<div class="key" onclick="press(9)">9</div>
+<div></div>
+<div class="key" onclick="press(0)">0</div>
+<div></div>
+</div>
+</div>
+
+<div id="main">
+<div id="welcome">❤️ Welcome Saras ❤️</div>
+<img id="photo">
+<div id="message"></div>
+<h2>❤️ Until we meet ❤️</h2>
+<div id="timer"></div>
+</div>
+
+<!-- background music -->
+<audio id="music" loop>
+<source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_115b9b07c2.mp3?filename=romantic-ambient-110857.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+const correct="0404";
+let input="";
+
+function press(num){
+if(input.length<4){
+input+=num;
+updateDots();
+}
+if(input.length===4){
+if(input===correct){unlock();}
+else{input="";updateDots();}
+}
+}
+
+function updateDots(){
+document.querySelectorAll(".dot").forEach((d,i)=>{
+d.classList.toggle("filled",i<input.length);
+});
+}
+
+function unlock(){
+document.getElementById("lockscreen").style.display="none";
+document.getElementById("main").style.display="flex";
+
+let img=document.getElementById("photo");
+img.src="photo.jpg";
+img.style.display="block";
+
+document.getElementById("music").play();
+
+setTimeout(()=>{
+document.getElementById("welcome").style.display="none";
+showTyping();
+},2500);
+}
+
+function showTyping(){
+let msg=document.getElementById("message");
+msg.style.opacity="1";
+msg.innerHTML='<span class="typing">I miss you Saras ❤️</span>';
+}
+
+const target=new Date("April 4, 2026 12:30:00").getTime();
+
+function update(){
+let now=new Date().getTime();
+let d=target-now;
+
+if(d<=0){timer.innerHTML="Finally together ❤️";return;}
+
+let days=Math.floor(d/(1000*60*60*24));
+let h=Math.floor((d/(1000*60*60))%24);
+let m=Math.floor((d/(1000*60))%60);
+let s=Math.floor((d/1000)%60);
+
+timer.innerHTML=days+"d "+h+"h "+m+"m "+s+"s";
+}
+setInterval(update,1000);update();
+
+function heart(){
+let h=document.createElement("div");
+h.className="heart";
+h.style.left=Math.random()*100+"vw";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),6000);
+}
+setInterval(heart,300);
+
+function particle(){
+let p=document.createElement("div");
+p.className="particle";
+p.style.left=Math.random()*100+"vw";
+document.body.appendChild(p);
+setTimeout(()=>p.remove(),8000);
+}
+setInterval(particle,200);
+</script>
+
+</body>
+</html>
